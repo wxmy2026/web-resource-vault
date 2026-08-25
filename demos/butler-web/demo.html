@@ -1,0 +1,85 @@
+<main class="app-shell">
+  <header class="topbar">
+    <div>
+      <div class="kicker">PRIVATE iPAD BUTLER</div>
+      <h1>管家</h1>
+    </div>
+    <div id="onlineBadge" class="badge">网页功能 Demo</div>
+  </header>
+
+  <section class="hero card">
+    <div class="hero-copy">
+      <div class="eyebrow">明早计划</div>
+      <div id="heroTime" class="hero-time">08:00</div>
+      <div id="heroStatus" class="hero-status">轻柔音乐 · 已开启 · 剩余 7 天</div>
+    </div>
+    <label class="switch-wrap">
+      <input id="enabled" type="checkbox" checked>
+      <span class="switch"></span>
+    </label>
+  </section>
+
+  <section class="grid two">
+    <article class="card settings">
+      <h2>早晨音乐</h2>
+      <div class="setting-row">
+        <div><strong>播放时间</strong><small>正式版会交给 iPad 系统计划</small></div>
+        <input id="time" type="time" value="08:00">
+      </div>
+      <div class="setting-row">
+        <div><strong>如果我已经开始用 iPad</strong><small>Demo 用开关模拟这个状态</small></div>
+        <label class="mini-switch"><input id="active" type="checkbox"><span></span></label>
+      </div>
+      <div class="setting-row">
+        <div><strong>今天保持安静</strong><small>只跳过今天，不影响后面的计划</small></div>
+        <label class="mini-switch"><input id="quiet" type="checkbox"><span></span></label>
+      </div>
+      <div class="button-row">
+        <button id="renew" class="button primary">再运行一周</button>
+        <button id="simulate" class="button secondary">模拟现在 08:00</button>
+      </div>
+    </article>
+
+    <article class="card player-card">
+      <div class="player-head">
+        <div>
+          <div class="eyebrow">现在试听</div>
+          <h2 id="trackTitle">Soft Morning · Butler Demo</h2>
+          <p>这段声音由浏览器实时合成，不是假按钮。</p>
+        </div>
+        <div id="pulse" class="pulse"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="player-controls">
+        <button id="play" class="round">▶</button>
+        <button id="stop" class="round ghost">■</button>
+        <input id="volume" type="range" min="0" max="1" step="0.01" value="0.42" aria-label="音量">
+      </div>
+      <div id="audioStatus" class="audio-status">点击播放即可听到声音</div>
+    </article>
+  </section>
+
+  <section class="grid two">
+    <article class="card services">
+      <h2>音乐服务</h2>
+      <div class="service-row">
+        <div class="service-icon apple">♪</div>
+        <div class="service-copy"><strong>Apple Music</strong><small id="appleText">Demo：未连接</small></div>
+        <button id="apple" class="chip">模拟连接</button>
+      </div>
+      <div class="service-row">
+        <div class="service-icon spotify">S</div>
+        <div class="service-copy"><strong>Spotify</strong><small id="spotifyText">Demo：未连接</small></div>
+        <button id="spotify" class="chip">模拟连接</button>
+      </div>
+      <label class="failure-row"><input id="appleFail" type="checkbox"> 模拟 Apple Music 播放失败</label>
+    </article>
+
+    <article class="card log-card">
+      <div class="log-title"><h2>管家刚刚做了什么</h2><button id="clearLog">清空</button></div>
+      <div id="decision" class="decision">等待你的操作。</div>
+      <div id="log" class="log"></div>
+    </article>
+  </section>
+
+  <footer>功能 Demo：界面与决策逻辑可真实点击，试听音乐会真实发声；Apple Music / Spotify 账户授权仍为模拟，正式 iPad App 才接真实 API。</footer>
+</main>
