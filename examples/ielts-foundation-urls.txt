@@ -1,0 +1,25 @@
+# Official, freely available foundation resources for IELTS learners.
+# One direct resource URL per line. Re-run with:
+# python -m src.cli --root vault batch examples/ielts-foundation-urls.txt
+
+# Cambridge English A2 Key: handbook with sample papers and listening audio
+https://www.cambridgeenglish.org/Images/610842-a2-key-handbook-for-teachers.pdf
+https://www.cambridgeenglish.org/Images/506255-a2-key-listening-sample-test.mp3
+
+# Cambridge English B1 Preliminary: handbook, listening audio and vocabulary
+https://www.cambridgeenglish.org/Images/168150-b1-preliminary-teachers-handbook.pdf
+https://www.cambridgeenglish.org/Images/505234-b1-preliminary-handbook-for-teachers-listening-audio-files.mp3
+https://www.cambridgeenglish.org/Images/506887-b1-preliminary-vocabulary-list.pdf
+https://www.cambridgeenglish.org/Images/504344-b1-preliminary-sample-papers.zip
+https://www.cambridgeenglish.org/Images/697387-b1-preliminary-listening-sample-1-answer-key.pdf
+https://www.cambridgeenglish.org/Images/697386-b1-preliminary-listening-sample-test-1-tapescript.pdf
+https://www.cambridgeenglish.org/Images/697388-b1-preliminary-reading-sample-test-1-answer-key.pdf
+
+# Cambridge English A2/B1 assessment guides with real performance examples
+https://www.cambridgeenglish.org/Images/735386-a2-key-teacher-guide-assessing-speaking.pdf
+https://www.cambridgeenglish.org/Images/600973-teacher-guide-for-writing-a2-key-for-schools.pdf
+https://www.cambridgeenglish.org/Images/735390-b1-preliminary-teacher-guide-assessing-speaking.pdf
+https://www.cambridgeenglish.org/Images/563276-b1-preliminary-assessing-speaking.pdf
+
+# Official IELTS materials mirrored by the British Council
+https://takeielts.britishcouncil.org/sites/default/files/%5Bdownloads%5D/ielts-speaking-sample-tasks-2023.pdf
