@@ -1,57 +1,86 @@
 ---
 name: morning-music-butler
-description: Control gentle morning music on macOS, preferring Apple Music and falling back to Spotify when Apple Music playback is unavailable.
+description: Run a low-friction morning music routine on macOS, skipping playback when the user is already active on iPad, learning from Apple Music favorites, and falling back to Spotify.
 metadata:
-  os: [darwin]
+  os: [darwin, ipadOS]
   category: personal-assistant
 ---
 
 # Morning Music Butler
 
-Use this skill when the user asks the personal AI workbench to start, schedule, pause, or troubleshoot gentle morning music on their Mac.
+Use this skill for the user's morning music routine.
 
-## Current routine
+## Desired experience
 
-- Time: 08:00 local Mac time.
-- Duration: the installer creates seven morning calendar entries.
-- Primary player: Apple Music.
-- Primary target: `One Summer's Day: Studio Ghibli Favourites for Solo Piano by Joe Hisaishi`.
-- Apple Music target: `https://music.apple.com/us/album/one-summers-day-studio-ghibli-favourites-for-solo-piano/1583121575`.
-- Fallback player: Spotify desktop app.
-- Spotify fallback target: `spotify:album:6PyXSCnrQoKNQWyrZl4GTs`.
-- Playback volume: 28% inside the selected music app.
-- Late-wake guard: do not start audio outside 07:55–08:30.
+- At 08:00, play gentle music only if the user has not already started using the iPad that morning.
+- Prefer Apple Music and a calm mix derived from favorited tracks in the local Music library.
+- If there are too few usable favorite tracks, use a known gentle Studio Ghibli solo-piano album.
+- If Apple Music playback fails because of subscription, sign-in, or catalog availability, fall back to Spotify.
+- Keep playback volume at 28%.
+- Never start audio after 08:30.
+- The routine is a seven-day block, renewable with one click.
 
-The Ghibli/solo-piano choice is intentionally calm, melodic, cinematic, and suitable for waking rather than acting as a harsh alarm.
+## iPad activity gate
+
+iPadOS Shortcuts does not expose a device-unlock trigger. The native low-friction approximation is an App-open personal automation on the iPad:
+
+1. Select several apps the user commonly opens first after unlocking the iPad.
+2. Run without asking.
+3. Save/overwrite any small text value to `iCloud Drive/MorningMusicButler/ipad-active.txt`.
+
+The Mac checks that file's modification timestamp before playback. If it was modified since local midnight, the user is treated as already active and the 08:00 music is skipped.
+
+Do not claim this detects the passcode unlock event itself; it detects the first selected app open/switch after unlock.
+
+## Personalization
+
+`RefreshFavorites.applescript` rebuilds `Morning Music Butler • Favorites Mix` from tracks in the local Apple Music library that are marked `favorited` (or legacy `loved`). It keeps favorite tracks whose genre suggests a calm morning fit (ambient, classical, soundtrack, instrumental, easy listening, new age, piano, acoustic, jazz, folk and Chinese equivalents), or whose stored BPM is between 1 and 105.
+
+The filtering is intentionally conservative. It is a starting point inferred from explicit favorites, not a claim that ChatGPT can directly read the user's private Apple Music account through the catalog connector.
+
+The mix is refreshed on install and every time the user renews the routine for another week.
 
 ## Install
 
 Run `scripts/install-morning-music-butler.command` on the Mac. The installer:
 
-1. Compiles `MorningMusicButler.applescript` into a local signed app bundle with a stable bundle identifier.
-2. Installs Spotify with Homebrew when Spotify is missing and Homebrew is available.
-3. Creates a per-user LaunchAgent with seven explicit 08:00 calendar entries.
-4. Opens the helper once so macOS can ask for Automation permission to control Music and Spotify.
+1. Compiles `MorningMusicButler.app` with a stable bundle identifier.
+2. Compiles `Renew Morning Music Week.app` into `~/Applications`.
+3. Copies the favorites refresh and week-renew scripts into `~/Library/Application Support/MorningMusicButler`.
+4. Creates a seven-day 08:00 LaunchAgent schedule.
+5. Creates the iCloud Drive folder used by the iPad activity marker.
+6. Installs Spotify with Homebrew if Spotify is missing and Homebrew is available.
+7. Opens the helper once so macOS can request Automation permission for Music and Spotify.
 
-The only expected human action is approving macOS permission dialogs and signing in to a music service if that service is not already signed in.
+Expected human-only actions are macOS permission approval, music-service sign-in if needed, and the one-time iPad Shortcut personal-automation setup required by iPadOS.
 
-## Playback behavior
+## One-click repeat
+
+`~/Applications/Renew Morning Music Week.app` is the repeat button. Clicking it:
+
+1. Refreshes the favorites-derived morning mix.
+2. Replaces the LaunchAgent schedule with the next seven 08:00 mornings.
+3. Shows a completion notification.
+
+No terminal work is required after initial installation.
+
+## Playback order
 
 At a scheduled run:
 
-1. Hand the exact Apple Music album deep link to Music.
-2. Set Music volume to 28% and attempt playback.
-3. Verify that Music reports `player state = playing`.
-4. If Apple Music does not start, activate Spotify, set volume to 28%, enable shuffle, and play the Spotify album URI.
-5. Verify that Spotify reports `player state = playing`.
-6. Never claim playback succeeded without player-state evidence.
-
-This treats a missing/expired Apple Music subscription, sign-in problem, or failed catalog playback the same way: Apple Music is attempted first, and Spotify is the fallback.
+1. Reject runs outside 07:55–08:30.
+2. Check the iCloud iPad activity marker; if it was touched today, stop with no audio.
+3. Try `Morning Music Butler • Favorites Mix` when it contains at least five tracks.
+4. Verify that Music reports `player state = playing`.
+5. If needed, try `One Summer's Day: Studio Ghibli Favourites for Solo Piano by Joe Hisaishi` in Apple Music.
+6. Verify playback again.
+7. If Apple Music still fails, activate Spotify and play the configured gentle fallback album.
+8. Never claim playback succeeded without player-state evidence.
 
 ## Safety and reliability
 
 - Do not use UI click coordinates.
 - Do not bypass DRM, authentication, subscriptions, or access controls.
-- Do not store account passwords, tokens, or cookies in the repository.
-- macOS Automation permission must be granted to the compiled `MorningMusicButler.app`; this is why the scheduled job uses an app bundle rather than a raw background shell script.
-- If the Mac sleeps through 08:00, launchd may deliver the event after wake. The helper refuses to start audio after 08:30 to avoid surprising late playback.
+- Do not store passwords, tokens, or cookies in the repository.
+- macOS Automation permission must be granted to the compiled helper app.
+- iPad unlock status is not directly exposed by iPadOS Shortcuts; use only documented event triggers.
