@@ -1,0 +1,8 @@
+---
+name: Butler iPad Interactive Demo
+description: Interactive Butler prototype with working controls and real Web Audio playback.
+authors:
+  - wxmy2026
+normalize_css: yes
+load_type: d
+...
