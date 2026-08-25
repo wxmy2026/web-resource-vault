@@ -1,0 +1,2 @@
+# Put one verified, direct, legally public resource URL on each line.
+# For an HTML resource page, use: python -m src.cli crawl "PAGE_URL"
