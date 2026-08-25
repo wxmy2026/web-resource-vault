@@ -2,6 +2,18 @@
 # One direct resource URL per line. Re-run with:
 # python -m src.cli --root vault batch examples/ielts-foundation-urls.txt
 
+# British Council IELTS Life Skills A1/A2/B1 sample papers
+https://takeielts.britishcouncil.org/sites/default/files/%5Bdownloads%5D/ielts-life-skills-a1-speaking-and-listening-sample-a_0.pdf
+https://takeielts.britishcouncil.org/sites/default/files/%5Bdownloads%5D/ielts-life-skills-a1-speaking-and-listening-sample-b.pdf
+https://takeielts.britishcouncil.org/sites/default/files/%5Bdownloads%5D/ielts-life-skills-a2-speaking-and-listening-sample-a.pdf
+https://takeielts.britishcouncil.org/sites/default/files/%5Bdownloads%5D/ielts-life-skills-a2-speaking-and-listening-sample-b.pdf
+https://takeielts.britishcouncil.org/sites/default/files/%5Bdownloads%5D/ielts-life-skills-b1-speaking-and-listening-sample-a.pdf
+https://takeielts.britishcouncil.org/sites/default/files/%5Bdownloads%5D/ielts-life-skills-b1-speaking-and-listening-sample-b.pdf
+
+# Cambridge English Pre-A1, A1 and A2 Young Learners materials
+https://www.cambridgeenglish.org/Images/722535-cambridge-english-young-learners-sample-papers-volume-1.pdf
+https://www.cambridgeenglish.org/Images/357180-starters-movers-and-flyers-handbook-for-teachers-2024.pdf
+
 # Cambridge English A2 Key: handbook with sample papers and listening audio
 https://www.cambridgeenglish.org/Images/610842-a2-key-handbook-for-teachers.pdf
 https://www.cambridgeenglish.org/Images/506255-a2-key-listening-sample-test.mp3
@@ -23,3 +35,5 @@ https://www.cambridgeenglish.org/Images/563276-b1-preliminary-assessing-speaking
 
 # Official IELTS materials mirrored by the British Council
 https://takeielts.britishcouncil.org/sites/default/files/%5Bdownloads%5D/ielts-speaking-sample-tasks-2023.pdf
+https://takeielts.britishcouncil.org/sites/default/files/%5Bdownloads%5D/ielts_speaking_band_descriptors.pdf
+https://takeielts.britishcouncil.org/sites/default/files/%5Bdownloads%5D/ielts_writing_band_descriptors.pdf
