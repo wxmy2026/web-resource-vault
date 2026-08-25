@@ -28,8 +28,9 @@ final class ButlerSettings: ObservableObject {
         morningMusicEnabled = defaults.object(forKey: Keys.morningMusicEnabled) as? Bool ?? true
         morningHour = defaults.object(forKey: Keys.morningHour) as? Int ?? 8
         morningMinute = defaults.object(forKey: Keys.morningMinute) as? Int ?? 0
-        quietToday = defaults.object(forKey: Keys.quietToday) as? Bool ?? false
+        quietToday = false
         activeUntil = defaults.object(forKey: Keys.activeUntil) as? Date ?? Calendar.current.date(byAdding: .day, value: 7, to: Date())!
+        resetDailyFlagsIfNeeded()
     }
 
     var morningTime: Date {
@@ -51,6 +52,7 @@ final class ButlerSettings: ObservableObject {
     }
 
     func markQuietToday() {
+        defaults.set(Date(), forKey: Keys.quietDate)
         quietToday = true
     }
 
@@ -60,6 +62,7 @@ final class ButlerSettings: ObservableObject {
             quietToday = true
         } else {
             quietToday = false
+            defaults.removeObject(forKey: Keys.quietDate)
         }
     }
 
