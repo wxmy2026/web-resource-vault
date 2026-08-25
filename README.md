@@ -4,6 +4,20 @@ A provenance-first Python CLI for collecting **legal, publicly accessible** lear
 
 It does not bypass paywalls, authentication, DRM, access controls, or licensing restrictions.
 
+This repository is also the first stage of a broader **Personal AI Workbench**: collect trustworthy material first, then connect it to Obsidian, AnythingLLM, Anki, and later automation. The staged plan is in [`docs/ROADMAP.md`](docs/ROADMAP.md), and the free/paid comparison is in [`docs/TOOL_MATRIX.md`](docs/TOOL_MATRIX.md).
+
+## Mac one-click setup
+
+The repository includes a double-clickable macOS setup file for the first-stage desktop stack:
+
+- Obsidian
+- Anki Desktop
+- Krita
+- AnythingLLM Desktop
+- this project's Python dependencies
+
+After downloading the repository on a Mac, open `scripts/setup-mac.command`. macOS may ask for the computer password while Homebrew installs software. The script creates the resource directory at `~/PersonalAI/Vault` and does not install ComfyUI, FreshRSS, Open WebUI, or synchronization software in the first pass.
+
 ## What it does
 
 - Downloads direct PDF, EPUB, text, data, audio, image, and ZIP resources.
