@@ -1,0 +1,63 @@
+name: Build Butler IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/butler-ipad/**'
+      - '.github/workflows/build-butler-ipa.yml'
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer || true
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        working-directory: apps/butler-ipad
+        run: xcodegen generate
+
+      - name: Build unsigned device app
+        working-directory: apps/butler-ipad
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project Butler.xcodeproj \
+            -scheme Butler \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "$RUNNER_TEMP/ButlerDerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY='' \
+            build | xcpretty
+
+      - name: Package IPA
+        run: |
+          set -euo pipefail
+          APP="$RUNNER_TEMP/ButlerDerivedData/Build/Products/Release-iphoneos/Butler.app"
+          test -d "$APP"
+          mkdir -p "$RUNNER_TEMP/ipa/Payload"
+          cp -R "$APP" "$RUNNER_TEMP/ipa/Payload/Butler.app"
+          cd "$RUNNER_TEMP/ipa"
+          /usr/bin/zip -qry "$GITHUB_WORKSPACE/Butler-unsigned.ipa" Payload
+          shasum -a 256 "$GITHUB_WORKSPACE/Butler-unsigned.ipa" > "$GITHUB_WORKSPACE/Butler-unsigned.ipa.sha256"
+
+      - name: Upload Butler IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Butler-unsigned-ipa
+          path: |
+            Butler-unsigned.ipa
+            Butler-unsigned.ipa.sha256
+          if-no-files-found: error
+          retention-days: 30
