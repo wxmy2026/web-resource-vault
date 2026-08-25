@@ -7,67 +7,38 @@ if [[ "$(uname -s)" != "Darwin" ]]; then
 fi
 
 project_dir="$(cd "$(dirname "$0")/.." && pwd)"
-source_script="$project_dir/skills/morning-music-butler/MorningMusicButler.applescript"
+skill_dir="$project_dir/skills/morning-music-butler"
+source_script="$skill_dir/MorningMusicButler.applescript"
+renew_app_source="$skill_dir/RenewMorningMusicWeek.applescript"
 app_dir="$HOME/Applications"
 app="$app_dir/MorningMusicButler.app"
-plist_dir="$HOME/Library/LaunchAgents"
-plist="$plist_dir/com.wxmy2026.morning-music-butler.plist"
+renew_app="$app_dir/Renew Morning Music Week.app"
 state_dir="$HOME/Library/Application Support/MorningMusicButler"
-log_file="$state_dir/morning-music.log"
+ipad_flag_dir="$HOME/Library/Mobile Documents/com~apple~CloudDocs/MorningMusicButler"
 
-mkdir -p "$app_dir" "$plist_dir" "$state_dir"
+mkdir -p "$app_dir" "$state_dir" "$ipad_flag_dir"
+cp "$skill_dir/RefreshFavorites.applescript" "$state_dir/RefreshFavorites.applescript"
+cp "$skill_dir/renew-week.sh" "$state_dir/renew-week.sh"
+chmod +x "$state_dir/renew-week.sh"
 
 if [[ ! -d /Applications/Spotify.app ]] && command -v brew >/dev/null 2>&1; then
   echo "Installing Spotify as the fallback player..."
   brew install --cask spotify || true
 fi
 
-rm -rf "$app"
+rm -rf "$app" "$renew_app"
 osacompile -o "$app" "$source_script"
+osacompile -o "$renew_app" "$renew_app_source"
+
 /usr/libexec/PlistBuddy -c 'Delete :CFBundleIdentifier' "$app/Contents/Info.plist" >/dev/null 2>&1 || true
 /usr/libexec/PlistBuddy -c 'Add :CFBundleIdentifier string com.wxmy2026.MorningMusicButler' "$app/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c 'Delete :CFBundleIdentifier' "$renew_app/Contents/Info.plist" >/dev/null 2>&1 || true
+/usr/libexec/PlistBuddy -c 'Add :CFBundleIdentifier string com.wxmy2026.RenewMorningMusicWeek' "$renew_app/Contents/Info.plist"
 codesign --force --deep --sign - "$app" >/dev/null
+codesign --force --deep --sign - "$renew_app" >/dev/null
 
-now_hhmm=$(date '+%H%M')
-start_offset=0
-if ((10#$now_hhmm >= 800)); then
-  start_offset=1
-fi
-
-calendar_entries=""
-for i in 0 1 2 3 4 5 6; do
-  offset=$((start_offset + i))
-  month=$(date -v+"${offset}"d '+%m' | sed 's/^0//')
-  day=$(date -v+"${offset}"d '+%d' | sed 's/^0//')
-  calendar_entries+="    <dict><key>Month</key><integer>${month}</integer><key>Day</key><integer>${day}</integer><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>\n"
-done
-
-cat > "$plist" <<PLIST
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>com.wxmy2026.morning-music-butler</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>$app/Contents/MacOS/applet</string>
-  </array>
-  <key>StartCalendarInterval</key>
-  <array>
-$(printf '%b' "$calendar_entries")  </array>
-  <key>StandardOutPath</key>
-  <string>$log_file</string>
-  <key>StandardErrorPath</key>
-  <string>$log_file</string>
-</dict>
-</plist>
-PLIST
-
-plutil -lint "$plist"
-launchctl bootout "gui/$(id -u)" "$plist" >/dev/null 2>&1 || true
-launchctl bootstrap "gui/$(id -u)" "$plist"
-launchctl enable "gui/$(id -u)/com.wxmy2026.morning-music-butler" || true
+# Build the first seven-day schedule and refresh the calm mix from Apple Music favorites.
+/bin/bash "$state_dir/renew-week.sh"
 
 echo
 echo "One-time permission step: macOS may ask whether MorningMusicButler can control Music/Spotify. Choose Allow."
@@ -79,10 +50,19 @@ open "$app"
 sleep 4
 
 echo
-echo "Installed. It will run at 08:00 for the next seven mornings."
-echo "Primary: Apple Music — One Summer's Day: Studio Ghibli Favourites for Solo Piano."
-echo "Fallback: Spotify — the matching Studio Ghibli solo-piano album."
-echo "Playback volume: 28%."
-echo "If the Mac is asleep at 08:00, launchd may run on wake; the app refuses to start audio after 08:30."
+echo "Installed."
+echo "• 08:00 for the next seven mornings."
+echo "• If today's iPad activity marker exists in iCloud Drive, music is skipped."
+echo "• Apple Music first: a gentle mix rebuilt from your favorited library tracks."
+echo "• If the mix is too small, a Studio Ghibli solo-piano album is used."
+echo "• If Apple Music cannot play, Spotify is the fallback."
+echo "• Playback volume: 28%."
+echo "• '$renew_app' is your one-click 'another week' button."
+echo "• If the Mac wakes late, playback is blocked after 08:30."
 echo
+echo "One remaining iPadOS setup: create an App-open personal automation that overwrites"
+echo "iCloud Drive/MorningMusicButler/ipad-active.txt whenever you start using a common app."
+echo "Apple does not expose a device-unlock trigger, so this is the closest reliable native signal."
+echo
+open -R "$renew_app" >/dev/null 2>&1 || true
 read -r -p "Press Return to close this window."
