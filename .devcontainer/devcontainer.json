@@ -1,0 +1,42 @@
+{
+  "name": "L's iPad Workstation",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true,
+      "dockerDashComposeVersion": "v2"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.wordWrap": "on",
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "workbench.startupEditor": "readme",
+        "files.autoSave": "afterDelay"
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens",
+        "redhat.vscode-yaml"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 5173, 8000, 8080],
+  "portsAttributes": {
+    "3000": {"label": "App Preview", "onAutoForward": "notify"},
+    "5173": {"label": "Vite Preview", "onAutoForward": "notify"},
+    "8000": {"label": "Local Web", "onAutoForward": "notify"},
+    "8080": {"label": "Service Preview", "onAutoForward": "notify"}
+  },
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "8gb",
+    "storage": "32gb"
+  }
+}
