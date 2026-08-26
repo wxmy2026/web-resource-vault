@@ -1,0 +1,16 @@
+{
+  "timezone": "Asia/Shanghai",
+  "browser_profile": "~/.chatgpt-daily-projects/browser-profile",
+  "jobs": {
+    "brief": {
+      "project": "每日全球深度简报",
+      "title_prefix": "每日全球深度简报",
+      "prompt_file": "prompts/daily_brief.md"
+    },
+    "town": {
+      "project": "世界小镇故事",
+      "title_prefix": "世界小镇故事",
+      "prompt_file": "prompts/town_story.md"
+    }
+  }
+}
